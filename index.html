@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="author" content="camo digital inc.">
+	<title> For Sticker Designers</title>
+	<link href="./css/bootstrap.min.css" rel="stylesheet">
+	<link href="./css/bootstrap-slider.min.css" rel="stylesheet">
+	<style>
+		body{font-family:century;color:#716f6f;font-size:14px}img.full{width:100%}.top-2{margin-top:2%}.top-5{margin-top:5%}.bottom-5{margin-bottom:5%}.left-2{margin-left:2%}.uploaded{background-color:#eee;border-radius:10px;margin-left:2%}.uploaded img{cursor:pointer;padding:20px 0}.center-select{padding-left:2%}#parameter{margin-left:2%}.bigfont{font-size:18px}.sticker-div{border-radius:2px}
+	</style>
+</head>
+<body>
+	<div class="navbar-fixed-top alert alert-dismissible fade in text-center message" style="display:none">
+	</div>
+	<div class="page-header text-center">
+	  <h1>Sticker Automated Deployment Tool</h1>
+	</div>
+	<div class="row main">
+		<div class="col-md-5 col-lg-5 col-sm-5 col-xs-12" id="model" style="position:relative">
+			<img src="./img/modelfe.png" id="model-image" class="img-rounded"/>
+		</div>
+		<div class="col-md-6 col-lg-6 col-sm-6 col-xs-12">
+			<div class="row text-left " id="upload">
+				<p class="bigfont left-2">上传贴纸</p>
+				<div class="row top-2">
+					<div class="col-md-2 col-lg-2 col-sm-2">
+						<img src="./img/upload.png" class="img-thumbnail full" id="uploader"/>
+						<input id="media" class="hidden" type="file" name="media"/>
+					</div>
+					<div class="col-md-10 col-lg-10 col-sm-10 text-right">
+
+					</div>	
+				</div>
+				<div class="row top-2 uploaded">
+					<!--<div class="col-md-3 col-lg-3 col-sm-3 sticker-div">-->
+						<!--<img src="./img/ear.png" class="img-rounded full"/>-->
+					<!--</div>-->
+					<!--<div class="col-md-3 col-lg-3 col-sm-3 sticker-div">-->
+						<!--<img src="./img/nose.png" class="img-rounded full"/>-->
+					<!--</div>-->
+					<!--<div class="col-md-3 col-lg-3 col-sm-3 sticker-div">-->
+						<!--<img src="./img/tooth.png" class="img-rounded full"/>-->
+					<!--</div>-->
+				</div>
+			</div>
+			<div class="row top-2" id="parameter" >
+				<p class="bigfont">为每张贴纸配置参数</p>
+				<p>1. 选择贴纸中心点位置</p>
+				<div class="row text-left center-select">
+					<label class="radio-inline">
+					  <input type="radio" name="inlineRadioOptions" value="eye"> 眼鼻中心
+					</label>
+					<label class="radio-inline">
+					  <input type="radio" name="inlineRadioOptions" value="nose"> 鼻尖
+					</label>
+					<label class="radio-inline">
+					  <input type="radio" name="inlineRadioOptions" value="nostril"> 鼻翼中心
+					</label>
+				</div>
+				<div class="row text-left center-select">
+					<label class="radio-inline">
+						<input type="radio" name="inlineRadioOptions" value="upperlip_bottom"> 上唇下侧中心
+					</label>
+					<label class="radio-inline">
+					  <input type="radio" name="inlineRadioOptions" value="underlip_top"> 下唇上侧中心
+					</label>
+					<label class="radio-inline">
+					  <input type="radio" name="inlineRadioOptions" value="underlip_bottom"> 下唇下侧中心
+					</label>
+				</div>
+				<p class="top-5">2. 在左侧拖动贴纸, 并调整宽度</p>
+				<p class="top-5">3. 填入必要参数</p>
+				<div class="row">
+					<div class="col-md-7 col-lg-7 col-sm-7 col-xs-12">
+						<input id="frame_folder" type="text" class="form-control left-2" placeholder="填入此贴纸所在文件夹名"/>
+					</div>
+					<div class="col-md-5 col-lg-5 col-sm-5 col-xs-12">
+						<input id="frame_num" type="text" class="form-control left-2" placeholder="填入此贴纸序列图张数"/>
+					</div>
+				</div>
+				<p class="top-5">4. 确认此贴纸的配置</p>
+				<div class="row top-5 text-left bottom-5">
+					<button id="fin" class="btn btn-default" style="margin-left:4%;width:40%;font-size:10px">完成此张贴纸的配置</button>
+				</div>
+				<hr/>
+				<div class="row text-right">
+					<button class="btn btn-success" style="font-size:10px;width:100%;" id="finall">完成所有配置，生成配置文件</button>
+				</div>
+			</div>
+		</div>
+	</div>
+		
+	<img src="" style="display:none" id="tmp"/>
+
+</body>
+
+<script src="./js/jquery.latest.min.js"></script>
+<script src="./js/ajaxfileupload.js"></script>
+<script src="./js/interact.min.js"></script>
+<script src="./js/custom.min.js"></script>
+
+</html>
