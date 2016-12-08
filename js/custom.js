@@ -1,4 +1,6 @@
-
+var currentStickerPointKey = '';
+var currentStickerDivDom = null;
+var currentStickerImgDom = null;
 var currentStickerIndex = 0;
 var stickersConfig = [];
 var selectedStickerObj = null;
@@ -64,10 +66,27 @@ var pointConfig = {
 $(document).ready(function(){
     setModelParam();
 
-    // init sticker
-    $(".sticker-div").click(function(){
-        stickerChosen($(this));
-    });
+    //$(document).on('click', '.sticker-div', function(){
+    //    currentStickerIndex = $(this).index();
+    //    if($("#sticker_" + currentStickerIndex).size() != 0){
+    //        useLastStickerConfig();
+    //    }else{
+    //        stickerChosen($(this).parent());
+    //        addStickerToModel(calculatePos());
+    //        dragNResize();
+    //    }
+    //});
+    //// init sticker
+    //$(".sticker-div").click(function(){
+    //    currentStickerIndex = $(this).index();
+    //    if($("#sticker_" + currentStickerIndex).size() != 0){
+    //        useLastStickerConfig();
+    //    }else{
+    //        stickerChosen($(this).parent());
+    //        addStickerToModel(calculatePos());
+    //        dragNResize();
+    //    }
+    //});
 
     // upload sticker
     $("#uploader").click(function(){ $("#media").click();});
@@ -80,9 +99,7 @@ $(document).ready(function(){
     // choose sticker center
     $("input[type='radio']").click(function(){
         if(noActiveSticker()) return;
-        if($("#sticker_" + currentStickerIndex).size() != 0){ $("#sticker_"+currentStickerIndex).remove(); }
-        addStickerToModel(calculatePos());
-        dragNResize();
+
     });
 });
 
@@ -122,7 +139,7 @@ function uploadConfig(){
 
 function finishSticker(){
     var config = {};
-    config.facePos = pointConfig[$("input[type='radio']:checked").val()].pos;
+    config.facePos = parseInt(getPosIndex(), 10);
     config.scaleWidthOffset = parseFloat(getWidthOffset());
     config.scaleXOffset = parseFloat(getXOffset());
     config.scaleYOffset = parseFloat(getYOffset());
@@ -131,7 +148,35 @@ function finishSticker(){
     config.frameWidth = $("#tmp").width();
     config.frameHeight = $("#tmp").height();
     stickersConfig[currentStickerIndex] = config;
+    console.log(stickersConfig);
     notify("贴纸参数保存成功", 'alert-success');
+}
+
+function getPosIndex(){
+    var x = getDigitFromCss(currentStickerDivDom.css('left')) + parseFloat(currentStickerImgDom.attr('data-x')) - leftPadding + currentStickerImgDom.width() / 2;
+    var y = getDigitFromCss(currentStickerDivDom.css('top')) + parseFloat(currentStickerImgDom.attr('data-y')) + currentStickerImgDom.height() / 2;
+    return calculatePosIndex({x: x, y: y});
+}
+
+function calculatePosIndex(pt){
+    var lowestDistance = 0;
+    var nearestPointKey = "";
+    for(var key in pointConfig){
+        var _x = pointConfig[key].center.x / standardWidth * modelImageWidth;
+        var _y = pointConfig[key].center.y / standardHeight * modelImageHeight;
+        var tmpPt = {x: _x, y: _y};
+        var _d = distance(pt, tmpPt);
+        if(lowestDistance == 0 || lowestDistance > _d){
+            lowestDistance = _d;
+            nearestPointKey = key;
+        };
+    }
+    currentStickerPointKey = nearestPointKey;
+    return pointConfig[nearestPointKey].pos;
+}
+
+function getDigitFromCss(css){
+    return parseFloat(css.substring(0, css.length - 2));
 }
 
 function getWidthOffset(){
@@ -139,7 +184,7 @@ function getWidthOffset(){
 }
 
 function widthDifference(){
-    var diff = parseFloat($("#sticker_" + currentStickerIndex + ">img").width()) - stickerBaseWidth();
+    var diff = parseFloat(currentStickerImgDom.width()) - stickerBaseWidth();
     return diff;
 }
 
@@ -149,21 +194,23 @@ function heightDifference(){
 }
 
 function getXOffset(){
-    var left_original_px = $("#sticker_" + currentStickerIndex).css("left");
-    var left_original = parseFloat(left_original_px.substring(0, left_original_px.length - 2)) - leftPadding;
-    var left_current = left_original + parseFloat($("#sticker_" + currentStickerIndex + ">img").attr("data-x"));
-    return ((left_current - left_original + (widthDifference()/2)) / standardModelOffsetWidth()).toFixed(2);
+    var left_original = getDigitFromCss(currentStickerDivDom.css("left")) - leftPadding;
+    var left_current = left_original + parseFloat(currentStickerImgDom.attr("data-x"));
+    var x_current = left_current + parseFloat(currentStickerImgDom.width() / 2);
+    var x_original = pointConfig[currentStickerPointKey].center.x / standardWidth * modelImageWidth;
+    return ((x_current - x_original) / standardModelOffsetWidth()).toFixed(2);
 }
 
 function getYOffset(){
-    var top_original_px = $("#sticker_" + currentStickerIndex).css("top");
-    var top_original = parseFloat(top_original_px.substring(0, top_original_px.length - 2));
-    var top_current = top_original + parseFloat($("#sticker_" + currentStickerIndex + ">img").attr("data-y"));
-    return ((top_current - top_original + (heightDifference()/2)) / standardModelOffsetWidth()).toFixed(2);
+    var top_original = getDigitFromCss(currentStickerDivDom.css("top"));
+    var top_current = top_original + parseFloat(currentStickerImgDom.attr("data-y"));
+    var y_current = top_current + parseFloat(currentStickerImgDom.height() / 2);
+    var y_original = pointConfig[currentStickerPointKey].center.y / standardHeight * modelImageHeight;
+    return ((y_current - y_original) / standardModelOffsetWidth()).toFixed(2);
 }
 
 function stickerBaseWidth(){
-    var baseWidthPts = pointConfig[$("input[type='radio']:checked").val()].widthBasePoints;
+    var baseWidthPts = pointConfig[currentStickerPointKey].widthBasePoints;
     var width = parseFloat(distance(baseWidthPts[0], baseWidthPts[1]) * standardWidth / modelImageWidth);
     return width;
 }
@@ -239,36 +286,29 @@ function dragMoveListener (event) {
 
 
 function calculatePos(){
-    var config = pointConfig[$("input[type='radio']:checked").val()];
+    var config = pointConfig["eye"];
     var param = {};
-    param.width = stickerBaseWidth();
+    param.width = parseFloat($("#tmp").width());
     param.x = (config.center.x / standardWidth) * modelImageWidth - (param.width / 2);
     param.y = (config.center.y / standardHeight) * modelImageHeight - ((param.width / selectedStickerObj.width() * selectedStickerObj.height()) / 2);
     return param;
 }
 
-function stickerChosen(obj){
-    obj.siblings().attr("style","").removeClass("active");
-    obj.attr("style", "border-top:3px solid #62addf").addClass("active");
-    currentStickerIndex = obj.index();
+function stickerChosenEffect(objDom){
+    objDom.siblings().attr("style","").removeClass("active");
+    objDom.attr("style", "border-top:3px solid #62addf").addClass("active");
     $("#model").children().removeClass('active');
-    selectedStickerObj = obj.children("img");
-    useLastStickerConfig();
+    selectedStickerObj = objDom.children("img");
     $("#tmp").attr("src", selectedStickerObj.attr("src"));
+    useLastStickerConfig();
 }
 
 function useLastStickerConfig(){
     if(stickersConfig[currentStickerIndex]){
         $("#frame_folder").val(stickersConfig[currentStickerIndex].frameFolder);
         $("#frame_num").val(stickersConfig[currentStickerIndex].frameNum);
-        for(var key in pointConfig){
-            if(pointConfig[key].pos == parseInt(stickersConfig[currentStickerIndex].facePos, 10)){
-                $("input[value='"+key+"']").prop("checked", true);
-            }
-        }
         dragNResize();
     }
-
 }
 
 function standardModelOffsetWidth(){
@@ -282,8 +322,22 @@ function addUploadedSticker(data){
     var dom = $(tpl);
     $(".uploaded").append(dom);
     $("img", dom).click(function(){
-        stickerChosen($(this).parent());
-    })
+        currentStickerIndex = $(this).parent().index();
+        stickerChosenEffect($(this).parent());
+        if($("#sticker_" + currentStickerIndex).size() != 0){
+            setCurrentDom();
+            useLastStickerConfig();
+        }else{
+            addStickerToModel(calculatePos());
+            setCurrentDom();
+            dragNResize();
+        }
+    });
+}
+
+function setCurrentDom(){
+    currentStickerDivDom = $("#sticker_" + currentStickerIndex);
+    currentStickerImgDom = currentStickerDivDom.children('img');
 }
 
 function ajaxFileUpload() {
@@ -309,7 +363,6 @@ function ajaxFileUpload() {
 
 function notify(message, type){
     var type = type ? type : "alert-warning";
-    console.log(type);
     $(".message").addClass(type).html(message);
     $(".message").show();
     setTimeout(function(){

@@ -20,7 +20,7 @@
 			<img src="./img/modelfe.png" id="model-image" class="img-rounded"/>
 		</div>
 		<div class="col-md-6 col-lg-6 col-sm-6 col-xs-12">
-			<div class="row text-left " id="upload">
+			<div class="row text-left top-5" id="upload">
 				<p class="bigfont left-2">上传贴纸</p>
 				<div class="row top-2">
 					<div class="col-md-2 col-lg-2 col-sm-2">
@@ -45,31 +45,8 @@
 			</div>
 			<div class="row top-2" id="parameter" >
 				<p class="bigfont">为每张贴纸配置参数</p>
-				<p>1. 选择贴纸中心点位置</p>
-				<div class="row text-left center-select">
-					<label class="radio-inline">
-					  <input type="radio" name="inlineRadioOptions" value="eye"> 眼鼻中心
-					</label>
-					<label class="radio-inline">
-					  <input type="radio" name="inlineRadioOptions" value="nose"> 鼻尖
-					</label>
-					<label class="radio-inline">
-					  <input type="radio" name="inlineRadioOptions" value="nostril"> 鼻翼中心
-					</label>
-				</div>
-				<div class="row text-left center-select">
-					<label class="radio-inline">
-						<input type="radio" name="inlineRadioOptions" value="upperlip_bottom"> 上唇下侧中心
-					</label>
-					<label class="radio-inline">
-					  <input type="radio" name="inlineRadioOptions" value="underlip_top"> 下唇上侧中心
-					</label>
-					<label class="radio-inline">
-					  <input type="radio" name="inlineRadioOptions" value="underlip_bottom"> 下唇下侧中心
-					</label>
-				</div>
-				<p class="top-5">2. 在左侧拖动贴纸, 并调整宽度</p>
-				<p class="top-5">3. 填入必要参数</p>
+				<p class="top-5">1. 在左侧拖动贴纸, 并调整宽度</p>
+				<p class="top-5">2. 填入必要参数</p>
 				<div class="row">
 					<div class="col-md-7 col-lg-7 col-sm-7 col-xs-12">
 						<input id="frame_folder" type="text" class="form-control left-2" placeholder="填入此贴纸所在文件夹名"/>
@@ -78,7 +55,7 @@
 						<input id="frame_num" type="text" class="form-control left-2" placeholder="填入此贴纸序列图张数"/>
 					</div>
 				</div>
-				<p class="top-5">4. 确认此贴纸的配置</p>
+				<p class="top-5">3. 确认此贴纸的配置</p>
 				<div class="row top-5 text-left bottom-5">
 					<button id="fin" class="btn btn-default" style="margin-left:4%;width:40%;font-size:10px">完成此张贴纸的配置</button>
 				</div>
@@ -97,6 +74,6 @@
 <script src="./js/jquery.latest.min.js"></script>
 <script src="./js/ajaxfileupload.js"></script>
 <script src="./js/interact.min.js"></script>
-<script src="./js/custom.min.js"></script>
+<script src="./js/custom.js"></script>
 
 </html>
